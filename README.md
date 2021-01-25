@@ -1,0 +1,3 @@
+# PySudoku
+
+Simple sudoku solver
