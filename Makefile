@@ -9,3 +9,5 @@ test: ${VENV}
 	. venv/bin/activate
 	python3 -m pip install .
 	pytest
+
+.PHONY: test
