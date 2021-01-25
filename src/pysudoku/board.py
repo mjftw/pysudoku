@@ -1,8 +1,8 @@
-from typing import List
+from typing import List, NoReturn, Union
 
 
 class Board:
-    def __init__(self, size):
+    def __init__(self, size: int = 9):
         self.tiles = [[0 for _ in range(size)] for _ in range(size)]
 
     def rows(self):
@@ -11,12 +11,21 @@ class Board:
     def cols(self):
         return len(self.tiles[0]) if self.tiles else 0
 
-    def set_tile(self, col: int, row: int, value: int):
-        if (col < 0 or
+    def _assert_in_bounds(self, col: int, row: int) -> Union[NoReturn, None]:
+        if (
+            col < 0 or
             row < 0 or
             row >= self.rows() or
             col >= self.cols()
         ):
             raise RuntimeError(f'Coordinates out of bounds: [{col}, {row}]')
 
+    def set_tile(self, col: int, row: int, value: int):
+        self._assert_in_bounds(col, row)
+
         self.tiles[row][col] = value
+
+    def get_tile(self, col: int, row: int) -> int:
+        self._assert_in_bounds(col, row)
+
+        return self.tiles[row][col]

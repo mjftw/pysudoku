@@ -17,28 +17,28 @@ def test_board_set_tile_sets_only_tile():
     ]
 
 
-def test_board_should_error_on_negative_col():
+def test_board_set_should_error_on_negative_col():
     board = Board(3)
 
     with raises(RuntimeError):
         board.set_tile(-1, 1, 1)
 
 
-def test_board_should_error_on_negative_row():
+def test_board_set_should_error_on_negative_row():
     board = Board(3)
 
     with raises(RuntimeError):
         board.set_tile(1, -1, 1)
 
 
-def test_board_should_error_on_row_too_high():
+def test_board_set_should_error_on_row_too_high():
     board = Board(3)
 
     with raises(RuntimeError):
         board.set_tile(1, 3, 1)
 
 
-def test_board_should_error_on_col_too_high():
+def test_board_set_should_error_on_col_too_high():
     board = Board(3)
 
     with raises(RuntimeError):
@@ -56,7 +56,47 @@ def test_board_cols():
 
     assert board.cols() == 3
 
+
+def test_board_get():
+    board = Board(3)
+    board.set_tile(1, 2, 3)
+    assert board.get_tile(1, 2) == 3
+
+
+def test_board_get_should_error_on_negative_col():
+    board = Board(3)
+
+    with raises(RuntimeError):
+        board.get_tile(-1, 1)
+
+
+def test_board_get_should_error_on_negative_row():
+    board = Board(3)
+
+    with raises(RuntimeError):
+        board.get_tile(1, -1)
+
+
+def test_board_get_should_error_on_row_too_high():
+    board = Board(3)
+
+    with raises(RuntimeError):
+        board.get_tile(1, 3)
+
+
+def test_board_get_should_error_on_col_too_high():
+    board = Board(3)
+
+    with raises(RuntimeError):
+        board.get_tile(3, 1)
+
+
 def test_board_cols_safe_when_zero_size_board():
     board = Board(0)
 
     assert board.cols() == 0
+
+
+def test_board_defaults_size_9():
+    board = Board()
+    assert board.rows() == 9 and board.cols() == 9
