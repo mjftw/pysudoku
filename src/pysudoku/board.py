@@ -1,6 +1,6 @@
 from typing import List, NoReturn, Union
 from dataclasses import dataclass, field
-from numpy import matrix
+import os
 
 def empty_tiles(size: int) -> List[List[int]]:
     return [[0 for _ in range(size)] for _ in range(size)]
@@ -16,7 +16,6 @@ class Board:
     @property
     def size(self):
         return len(self.tiles)
-
 
 def _assert_valid_params(tiles, cell_size):
         _assert_board_square(tiles)
@@ -47,18 +46,26 @@ def _assert_valid_values(tiles: List[List[int]]) -> Union[NoReturn, None]:
             if value < 0 or value > board_size:
                 raise AttributeError(f'Value out of bounds: {value}')
 
-def _assert_valid_coordinates(board: Board, row: int, col: int):
-    if not (0 <= row < board.size) or (not 0 <= col < board.size):
-        raise AttributeError('Coordinates out of range')
+def _assert_valid_row(board: Board, row_idx: int):
+    if not (0 <= row_idx < board.size):
+        raise AttributeError(f'Row {row_idx} out of bounds')
 
-def set_tile(board: Board, col: int, row: int, value: int) -> Board:
-    _assert_valid_coordinates(board, row, col)
+def _assert_valid_col(board: Board, col_idx: int):
+    if not ( 0 <= col_idx < board.size):
+        raise AttributeError(f'Col {col_idx} out of bounds ')
 
-    new_row = board.tiles[row][:col] + [value] + board.tiles[row][col+1:]
+def _assert_valid_coordinates(board: Board, col_idx: int, row_idx: int):
+    _assert_valid_row(board, row_idx)
+    _assert_valid_col(board, col_idx)
+
+def set_tile(board: Board, col_idx: int, row_idx: int, value: int) -> Board:
+    _assert_valid_coordinates(board, col_idx, row_idx)
+
+    new_row = board.tiles[row_idx][:col_idx] + [value] + board.tiles[row_idx][col_idx+1:]
     new_tiles = (
-        board.tiles[:row] +
+        board.tiles[:row_idx] +
         [new_row] +
-        board.tiles[row+1:]
+        board.tiles[row_idx+1:]
     )
 
     return Board(
@@ -66,9 +73,37 @@ def set_tile(board: Board, col: int, row: int, value: int) -> Board:
         cell_size=board.cell_size
     )
 
-def get_tile(board: Board, col: int, row: int) -> int:
-    _assert_valid_coordinates(board, row, col)
-    return board.tiles[row][col]
+def get_tile(board: Board, col_idx: int, row_idx: int) -> int:
+    _assert_valid_coordinates(board, col_idx, row_idx)
+    return board.tiles[row_idx][col_idx]
 
-def str_board(board: Board) -> str:
-    return str(matrix(board.tiles))
+def value_in_row(board: Board, value: int, row_idx: int) -> bool:
+    return value in board.tiles[row_idx]
+
+def value_in_col(board: Board, value: int, col_idx: int) -> bool:
+    return any(value == row[col_idx] for row in board.tiles)
+
+def value_in_local_cell(board: Board, value: int, col_idx: int, row_idx: int) -> bool:
+    cell_row_start = (row_idx // board.cell_size) * board.cell_size
+    cell_col_start = (col_idx // board.cell_size) * board.cell_size
+    cell_row_end = cell_row_start + board.cell_size
+    cell_col_end = cell_col_start + board.cell_size
+
+    cell_values = [val for row in board.tiles[cell_row_start:cell_row_end] for val in row[cell_col_start:cell_col_end]]
+    return value in cell_values
+
+def valid_placement(board: Board, value: int, col_idx: int, row_idx: int) -> bool:
+    if value_in_row(board, value, row_idx):
+        return False
+
+    if value_in_col(board, value, col_idx):
+        return False
+
+    if value_in_local_cell(board, value, col_idx, row_idx):
+        return False
+
+    return True
+
+
+def solve_backtrack(board: Board) -> Board:
+    return board

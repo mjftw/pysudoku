@@ -1,5 +1,6 @@
 from pytest import raises
-from pysudoku.board import Board, empty_tiles, get_tile, set_tile, str_board
+import pytest
+from pysudoku.board import Board, empty_tiles, get_tile, print_board, set_tile, solve_backtrack, value_in_col, value_in_local_cell, value_in_row
 
 
 def test_empty_tiles_should_fill_all_zero():
@@ -126,3 +127,32 @@ def test_board_error_on_size_not_multiple_of_cellsize():
     with raises(AttributeError):
         Board(empty_tiles(11), 2)
 
+
+def test_value_in_row_false():
+    assert value_in_row(Board(), 5, 0) == False
+
+
+def test_value_in_row_true():
+    board = Board()
+    board = set_tile(board, 1, 0, 3)
+    assert value_in_row(board, 3, 0) == True
+
+
+def test_value_in_col_false():
+    assert value_in_col(Board(), 5, 0) == False
+
+
+def test_value_in_col_true():
+    board = Board()
+    board = set_tile(board, 0, 1, 3)
+    assert value_in_col(board, 3, 0) == True
+
+
+def test_value_in_local_cell_false():
+    assert value_in_local_cell(Board(), 5, 0, 0) == False
+
+
+def test_value_in_local_cell_true():
+    board = Board()
+    board = set_tile(board, 8, 5, 3)
+    assert value_in_local_cell(board, 3, 8, 5) == True
