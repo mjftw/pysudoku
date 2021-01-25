@@ -107,18 +107,26 @@ def valid_placement(board: Board, value: int, col_idx: int, row_idx: int) -> boo
 
 
 def print_board(board: Board):
-    output = ''
+    padsize = len(str(board.size))
+    output_rows = []
+    row_str = ''
     for row_idx, row in enumerate(board.tiles):
         if row_idx > 0:
-            output += os.linesep
+            output_rows.append(row_str)
+            row_str = ''
             if row_idx % board.cell_size == 0:
-                output += '-' * int(((board.size + board.size // board.cell_size - 1) * 2) - 1) + os.linesep
-        for col_idx, value in enumerate(row):
-            output += str(value) + ' '
-            if col_idx % board.cell_size == board.cell_size - 1 and col_idx < board.size - 1:
-                output += '| '
+                row_str += '-' * len(output_rows[0])
+                output_rows.append(row_str)
+                row_str = ''
 
-    print(output)
+        for col_idx, value in enumerate(row):
+            row_str += str(value).rjust(padsize + 1)
+            if col_idx % board.cell_size == board.cell_size - 1 and col_idx < board.size - 1:
+                row_str += ' ' + '|'.rjust(padsize-1)
+
+    output_rows.append(row_str)
+
+    print(os.linesep.join(output_rows))
 
 
 def solve_backtrack(board: Board) -> Board:
