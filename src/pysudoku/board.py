@@ -1,4 +1,4 @@
-from typing import List, NoReturn, Union
+from typing import NoReturn, Union
 
 
 class Board:
@@ -22,6 +22,11 @@ class Board:
 
     def set_tile(self, col: int, row: int, value: int):
         self._assert_in_bounds(col, row)
+        if (value < 1 or
+            value > self.rows() or
+            value > self.cols()
+        ):
+            raise RuntimeError(f'Value out of bounds: {value}')
 
         self.tiles[row][col] = value
 

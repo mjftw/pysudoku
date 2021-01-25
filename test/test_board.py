@@ -45,6 +45,33 @@ def test_board_set_should_error_on_col_too_high():
         board.set_tile(3, 1, 1)
 
 
+
+def test_board_set_should_error_on_negative_value():
+    board = Board(3)
+
+    with raises(RuntimeError):
+        board.set_tile(0, 0, -1)
+
+
+def test_board_set_should_error_on_zero_value():
+    board = Board(3)
+
+    with raises(RuntimeError):
+        board.set_tile(0, 0, 0)
+
+
+def test_board_set_should_error_on_value_too_high():
+    board = Board(3)
+
+    with raises(RuntimeError):
+        board.set_tile(0, 0, 4)
+
+
+def test_board_set_should_not_error_on_max_value():
+    board = Board(3)
+    board.set_tile(0, 0, 3)
+
+
 def test_board_rows():
     board = Board(3)
 
