@@ -157,5 +157,9 @@ def test_value_in_local_cell_true():
     board = set_tile(board, 8, 5, 3)
     assert value_in_local_cell(board, 3, 8, 5) == True
 
-if __name__ == '__main__':
-    test_value_in_local_cell_true()
+
+def test_solve_backtrack(solution_pair):
+    board, solved = solve_backtrack(solution_pair.unsolved)
+
+    assert solved
+    assert board == solution_pair.solved

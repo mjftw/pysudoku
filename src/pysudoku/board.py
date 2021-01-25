@@ -1,4 +1,4 @@
-from typing import List, NoReturn, Union
+from typing import List, NoReturn, Tuple, Union
 from dataclasses import dataclass, field
 import os
 from math import sqrt
@@ -107,16 +107,11 @@ def value_in_local_cell(board: Board, value: int, col_idx: int, row_idx: int) ->
 
 
 def valid_placement(board: Board, value: int, col_idx: int, row_idx: int) -> bool:
-    if value_in_row(board, value, row_idx):
-        return False
-
-    if value_in_col(board, value, col_idx):
-        return False
-
-    if value_in_local_cell(board, value, col_idx, row_idx):
-        return False
-
-    return True
+    return not (
+        value_in_row(board, value, row_idx) or
+        value_in_col(board, value, col_idx) or
+        value_in_local_cell(board, value, col_idx, row_idx)
+    )
 
 
 def print_board(board: Board):
@@ -133,7 +128,10 @@ def print_board(board: Board):
                 row_str = ''
 
         for col_idx, value in enumerate(row):
-            row_str += str(value).rjust(padsize + 1)
+            # Set empty char as .
+            to_print = value if value != 0 else '.'
+
+            row_str += str(to_print).rjust(padsize + 1)
             if col_idx % board.cell_size == board.cell_size - 1 and col_idx < board.size - 1:
                 row_str += ' ' + '|'.rjust(padsize-1)
 
@@ -141,6 +139,27 @@ def print_board(board: Board):
 
     print(os.linesep.join(output_rows))
 
+def next_empty(board: Board) -> Union[Tuple[int, int], None]:
+    for row_idx in range(board.size):
+        for col_idx in range(board.size):
+            if get_tile(board, col_idx, row_idx) == 0:
+                return (col_idx, row_idx)
 
-def solve_backtrack(board: Board) -> Board:
-    return board
+    return None
+
+
+def solve_backtrack(board: Board) -> Tuple[Board, bool]:
+    empty_pos = next_empty(board)
+    if not empty_pos:
+        return board, True
+
+    col_idx, row_idx = empty_pos
+    possible_values = filter(lambda v: valid_placement(board, v, col_idx, row_idx), range(1, board.size+1))
+    for value in possible_values:
+        new_board = set_tile(board, col_idx, row_idx, value)
+        new_board, solved = solve_backtrack(new_board)
+        if solved:
+            return new_board, True
+
+    # Backtrack
+    return board, False
