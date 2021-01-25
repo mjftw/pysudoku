@@ -1,6 +1,7 @@
 from typing import List, NoReturn, Union
 from dataclasses import dataclass, field
 import os
+from math import sqrt
 
 def empty_tiles(size: int) -> List[List[int]]:
     return [[0 for _ in range(size)] for _ in range(size)]
@@ -8,19 +9,22 @@ def empty_tiles(size: int) -> List[List[int]]:
 @dataclass(frozen=True)
 class Board:
     tiles: List[List[int]] = field(default_factory=lambda: empty_tiles(9))
-    cell_size: int = 3
 
     def __post_init__(self):
-        _assert_valid_params(self.tiles, self.cell_size)
+        _assert_valid_tiles(self.tiles)
 
     @property
     def size(self):
         return len(self.tiles)
 
-def _assert_valid_params(tiles, cell_size):
-        _assert_board_square(tiles)
-        _assert_valid_cell_size(tiles, cell_size)
-        _assert_valid_values(tiles)
+    @property
+    def cell_size(self):
+        return int(sqrt(len(self.tiles)))
+
+def _assert_valid_tiles(tiles):
+    _assert_board_square(tiles)
+    _assert_valid_size(tiles)
+    _assert_valid_values(tiles)
 
 def _assert_board_square(tiles) -> Union[NoReturn, None]:
     rows = len(tiles)
@@ -32,9 +36,9 @@ def _assert_board_square(tiles) -> Union[NoReturn, None]:
         raise AttributeError('Board must be square')
 
 
-def _assert_valid_cell_size(tiles, cell_size) -> Union[NoReturn, None]:
-    if len(tiles) % cell_size != 0:
-        raise AttributeError('cell_size must be multiple of size')
+def _assert_valid_size(tiles) -> Union[NoReturn, None]:
+    if not float.is_integer(sqrt(len(tiles))):
+        raise AttributeError('Board size must be a square number')
 
 
 def _assert_valid_values(tiles: List[List[int]]) -> Union[NoReturn, None]:
@@ -68,10 +72,7 @@ def set_tile(board: Board, col_idx: int, row_idx: int, value: int) -> Board:
         board.tiles[row_idx+1:]
     )
 
-    return Board(
-        tiles=new_tiles,
-        cell_size=board.cell_size
-    )
+    return Board(new_tiles)
 
 def get_tile(board: Board, col_idx: int, row_idx: int) -> int:
     _assert_valid_coordinates(board, col_idx, row_idx)
@@ -111,10 +112,10 @@ def print_board(board: Board):
         if row_idx > 0:
             output += os.linesep
             if row_idx % board.cell_size == 0:
-                output += '-' * (((board.size + board.size // board.cell_size - 1) * 2) - 1) + os.linesep
+                output += '-' * int(((board.size + board.size // board.cell_size - 1) * 2) - 1) + os.linesep
         for col_idx, value in enumerate(row):
             output += str(value) + ' '
-            if col_idx % board.cell_size == 2 and col_idx < board.size - 1:
+            if col_idx % board.cell_size == board.cell_size - 1 and col_idx < board.size - 1:
                 output += '| '
 
     print(output)
