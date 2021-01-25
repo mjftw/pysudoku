@@ -127,3 +127,13 @@ def test_board_cols_safe_when_zero_size_board():
 def test_board_defaults_size_9():
     board = Board()
     assert board.rows() == 9 and board.cols() == 9
+
+
+def test_board_no_error_when_size_multiple_of_cellsize():
+    Board(99, 9)
+
+
+def test_board_error_on_size_not_multiple_of_cellsize():
+    with raises(AttributeError):
+        Board(11, 2)
+
