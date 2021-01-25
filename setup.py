@@ -13,6 +13,6 @@ setup(
     license='GPLv3',
     install_requires=[
         'pytest',
-        'flask'
+        'numpy'
     ]
 )
