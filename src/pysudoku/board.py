@@ -14,8 +14,8 @@ class Board:
     def set_tile(self, col: int, row: int, value: int):
         if (col < 0 or
             row < 0 or
-            row >= len(self.tiles) or
-            col >= len(self.tiles[0])
+            row >= self.rows() or
+            col >= self.cols()
         ):
             raise RuntimeError(f'Coordinates out of bounds: [{col}, {row}]')
 
