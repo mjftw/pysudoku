@@ -1,7 +1,7 @@
 
 from dataclasses import dataclass
 from pytest import fixture
-from pysudoku.board import Board
+from pysudoku.core.board import Board
 
 
 @dataclass

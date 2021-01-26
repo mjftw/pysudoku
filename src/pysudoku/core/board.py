@@ -139,6 +139,7 @@ def print_board(board: Board):
 
     print(os.linesep.join(output_rows))
 
+
 def next_empty(board: Board) -> Union[Tuple[int, int], None]:
     for row_idx in range(board.size):
         for col_idx in range(board.size):

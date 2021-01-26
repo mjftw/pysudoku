@@ -1,6 +1,14 @@
 from pytest import raises
-import pytest
-from pysudoku.board import Board, empty_tiles, get_tile, print_board, set_tile, solve_backtrack, value_in_col, value_in_local_cell, value_in_row
+from pysudoku.core.board import (
+    Board,
+    empty_tiles,
+    get_tile,
+    set_tile,
+    solve_backtrack,
+    value_in_col,
+    value_in_local_cell,
+    value_in_row
+)
 
 
 def test_empty_tiles_should_fill_all_zero():
