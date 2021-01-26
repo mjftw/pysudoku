@@ -13,6 +13,9 @@ setup(
     license='GPLv3',
     install_requires=[
         'pytest',
-        'numpy'
+        'numpy',
+        'fastapi',
+        'uvicorn',
+        'requests'
     ]
 )

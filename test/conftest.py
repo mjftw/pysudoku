@@ -1,7 +1,9 @@
 
 from dataclasses import dataclass
 from pytest import fixture
+from fastapi.testclient import TestClient
 from pysudoku.core.board import Board
+from pysudoku.web.app import app
 
 
 @dataclass
@@ -36,3 +38,8 @@ def solution_pair() -> Solution:
     ])
 
     return Solution(unsolved, solved)
+
+
+@fixture
+def client() -> TestClient:
+    return TestClient(app)
