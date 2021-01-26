@@ -1,6 +1,7 @@
 # PySudoku
 
-Simple sudoku solver
+Simple sudoku solver using backtrack method.
+It's pretty slow, but it works.
 
 ## Install
 
